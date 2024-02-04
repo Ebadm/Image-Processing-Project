@@ -1,0 +1,42 @@
+The code provided is for an image processing task aimed at enhancing the quality of fundus images of eyes, 
+which are then passed to a pre-trained binary classifier to predict whether an eye is healthy or not. 
+The images have been artificially corrupted, and my code addresses the following issues: 
+
+1. Noise:
+
+    denoise_image(image): This function takes an image as input and applies Non-local Means denoising for Gaussian noise and median filtering for salt/pepper noise. 
+    The cv2.fastNlMeansDenoisingColored function applies non-local means denoising to the input image. 
+    This method is effective in removing Gaussian noise while preserving the details in the image. 
+    The cv2.medianBlur function applies a median filter to the image. This method is effective in removing salt/pepper noise in the image. 
+    The function then returns the denoised image.
+
+2.  Missing Region: 
+
+    inpaint_missing_region(image, mask_radius=22, inpaint_radius=3): This function aims to fill in the missing circular region in the image. 
+    The function first creates a black mask of the same size as the input image using np.zeros. 
+    A white circle is drawn in the bottom right corner of the mask, representing the missing region to be inpainted, using cv2.circle. 
+    The cv2.inpaint function performs inpainting on the input image using the mask. 
+    The inpaint_radius parameter controls the size of the neighborhood around the missing region that will be inpainted. 
+    The function returns the inpainted image.
+    [The dimensions of the circle were taken manually running another self-written python script on the image]
+
+3. Warping:
+
+    unwarp_image(image): This function aims to remove the warping distortion in the image using projective transformation. 
+    The function calculates the projective transformation matrix using the source and destination points of the image. 
+    The source points represent the coordinates of a quadrilateral in the original image, 
+    while the destination points represent the coordinates of the same quadrilateral in the output image. 
+    The cv2.getPerspectiveTransform function calculates the projective transformation matrix using these points. 
+    The cv2.warpPerspective function applies the projective transformation to the input image. 
+    The function returns the unwarped image.
+
+4. Contrast/Brightness:
+
+    enhance_contrast_and_brightness(image): This function aims to improve the contrast and brightness of an input image using 
+    Contrast Limited Adaptive Histogram Equalization (CLAHE). 
+    The function first converts the input image from the BGR color space to the LAB color space using cv2.cvtColor. 
+    Then it splits the LAB image into its individual channels (L, A, and B) using cv2.split. A CLAHE object is created using cv2.createCLAHE. 
+    The clipLimit parameter controls the contrast enhancement, while the tileGridSize parameter controls the size of the grid for the histogram equalization. 
+    The CLAHE object is applied to the L channel using clahe.apply. The processed L channel is then merged with the original A and B channels using cv2.merge. 
+    Finally, the processed LAB image is converted back to the BGR color space using cv2.cvtColor, and the function returns the enhanced image.
+
